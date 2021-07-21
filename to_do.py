@@ -1,89 +1,68 @@
-help = """
+HELP = """
 Что может To-Do бот:
 * help - напечатать справку о программе.
 * add - добавить новую задачу в список.
 * show - напечатать все добавленные задачи.
-* exit - завершение работы с приложением.
+* exit - завершение работы с приложением (работает в любой момент).
 """
 
-today = []
-tomorrow = []
-others = []
+tasks = {}
+flag = True
 
-def tasks_append(tasks):
-    task = input('Введите название задачи: ')
-    tasks.append(task)
-    print('Ваша задача добавлена.')
-
-def tasks_show(tasks):
-    print(*tasks, sep='\n')
-
-
-while True:
-    command = input('Веедите команду: ')
-    if command == 'help':
-        print(help)
-    elif command == 'show':
-        qw = input('Из какого списка показать заздачи?\n'
-                   '(Сегодня, Завтра, Когда-нибудь, Все списки): ')
-        print('\n')
-        if qw.strip().lower() == 'сегодня':
-            if len(today) > 0:
-                print('Задачи на сегодня:')
-                tasks_show(today)
-            else:
-                print('Задач пока нет.')
-        elif qw.strip().lower() == 'завтра':
-            if len(tomorrow) > 0:
-                print('Задачи на завтра:')
-                tasks_show(tomorrow)
-            else:
-                print('Задач пока нет.')
-        elif qw.strip().lower() == 'когда-нибудь':
-            if len(others) > 0:
-                print('Задачи на когда-нибудь:')
-                tasks_show(others)
-            else:
-                print('Задач пока нет.')
-        elif qw.strip().lower() == 'все списки':
-            if len(today) > 0:
-                print('Задачи на сегодня:')
-                tasks_show(today)
-            else:
-                print('Задач на сегодня пока нет.')
-            if len(tomorrow) > 0:
-                print('Задачи на завтра:')
-                tasks_show(tomorrow)
-            else:
-                print('Задач на завтра пока нет.')
-            if len(others) > 0:
-                print('Задачи на когда-нибудь:')
-                tasks_show(others)
-            else:
-                print('Задач на когда-нибудь пока нет.')
+def add_input_validation(date):
+    """Проверяет правильность ввода даты."""
+    import datetime, time
+    date_now = datetime.datetime.today().strftime('%d.%m.%Y')
+    try:
+        valid_date = time.strptime(date, '%d.%m.%Y')
+        date_now = time.strptime(date_now, '%d.%m.%Y')
+        if valid_date >= date_now:
+            return True
         else:
-            print('Неизвестная задача!'
+            print('Невозможно сделать запись в прошлое.')
+            return False
+    except ValueError:
+        return False
+
+while flag:
+    command = input('Введите команду из меню: ')
+    if command.strip().lower() == 'help':
+        # Выводит меню помощи
+        print(HELP)
+    elif command.strip().lower() == 'show':
+        # Показывает задачи в хранилище задач
+        date = input()
+    elif command.strip().lower() == 'add':
+        # Позволяет сохранять новые задачи
+        date = input('Введите дату в формате (ДД.ММ.ГГГГ): ').strip()
+        if add_input_validation(date):
+            task = input('Введите название задачи: ')
+            if date in tasks.keys():
+                tasks[date].append(date)
+            elif task.strip().lower() == 'exit':
+                # Завершает работу приложения
+                print('\nСпасибо за использование приложения!\n'
+                      'До встречи!')
+                break
+            else:
+                tasks[date] = []
+                tasks[date].append(task)
+        elif date.strip().lower() == 'exit':
+            # Завершает работу приложения
+            print('\nСпасибо за использование приложения!\n'
+                  'До встречи!')
+            break
+        else:
+            print('\nНеверный формат ввода даты!\n'
                   'Попробуйте еще раз.')
             continue
-    elif command == 'add':
-        day = input('Выберите время для выполенения задачи\n'
-                    '(Сегодня, Завтра, Когда-нибудь): ')
-        print('\n')
-        if day.strip().lower() == 'сегодня':
-            tasks_append(today)
-        elif day.strip().lower() == 'завтра':
-            tasks_append(tomorrow)
-        elif day.strip().lower() == 'когда-нибудь':
-            tasks_append(others)
-        else:
-            print('Неизвестная задача!'
-                  'Попробуйте еще раз.')
-            continue
-    elif command == 'exit':
-        print('\n')
-        print('Спасибо за использование! До свидания!')
+    elif command.strip().lower() == 'exit':
+        # Завершает работу приложения
+        print('\nСпасибо за использование приложения!\n'
+              'До встречи!')
         break
     else:
-        print('Неизвестная задача!'
+        print('\nТакой команды нет в приложении.\n'
+              'Ошибка ввода!\n'
               'Попробуйте еще раз.')
         continue
