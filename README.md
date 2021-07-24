@@ -1,2 +1,2 @@
 # To-Do-bot
- bot from netology
+Бот пока не закончен...
