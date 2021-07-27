@@ -70,7 +70,7 @@ while flag:
         if input_validation(command, date):
             task = input('Введите название задачи: ')
             if date in tasks.keys():
-                tasks[date].append(date)
+                tasks[date].append(task)
             elif task.strip().lower() == 'exit':
                 # Завершает работу приложения
                 print('\nСпасибо за использование приложения!\n'
